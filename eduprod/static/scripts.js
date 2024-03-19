@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", function() {
     let currentQuestionIndex = 0;
     const questions = JSON.parse(document.getElementById('content').getAttribute('data-questions'));

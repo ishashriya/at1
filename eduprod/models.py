@@ -1,8 +1,10 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.utils.translation import gettext_lazy as _
 
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
     answer_text = models.TextField()
 
-    def _str_(self):
-        return self.question_texts
+    def __str__(self):
+        return self.question_text

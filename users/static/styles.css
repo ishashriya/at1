@@ -1,0 +1,48 @@
+body { 
+    font-family: Arial, sans-serif; 
+    padding: 0px; 
+}
+
+.question, .answer { 
+    margin: 20px; 
+    font-size: 20px; 
+}
+
+#revealBtn { 
+    margin: 20px; 
+    font-size: 16px; 
+    cursor: pointer; 
+}
+
+.form-row {
+    width: 400px;
+    display: flex;
+    margin-bottom: 10px; /* Space between rows */
+}
+.form-row label {
+    flex-basis: 50%; /* Assigns 50% of the container's width to the label */
+    padding-right: 10px; /* Space between the label and the select */
+    text-align: right;
+}
+.form-row select {
+    flex-basis: 50%; /* Assigns 50% of the container's width to the select */
+}
+
+p {
+    margin: 20px; 
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+.logo img {
+    height: auto; /* Keep image aspect ratio */
+    width: auto; /* You can set a max-width here if needed */
+}
+.user-info {
+    display: flex;
+    align-items: center;
+}
