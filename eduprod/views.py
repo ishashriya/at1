@@ -12,6 +12,10 @@ def index(request):
     return render(request, 'eduprod/index.html', {'questions_json': questions_json})
 
 @login_required
+def home(request):
+    return render(request, 'eduprod/home.html')
+
+@login_required
 def home34(request):
     return render(request, 'eduprod/home3-4.html')
 

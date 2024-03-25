@@ -1,10 +1,12 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Q&A</title>
     <link href="{% static 'users/styles.css' %}" rel="stylesheet">
 </head>
+
 <body>
     <div class="header">
         <div class="logo">
@@ -17,15 +19,16 @@
                 <button type="submit">Log out</button>
             </form>
         </div>
-    </div>   
+    </div>
     {% if messages %}
-        <ul class="messages">
+    <ul class="messages">
         {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-        </ul>
+        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+            {% endfor %}
+    </ul>
     {% endif %}
     {% block body %}
     {% endblock %}
 </body>
+
 </html>
