@@ -1,5 +1,5 @@
 {% extends "users/layout.html" %}
 {% block body %}
 <h1>Welcome, {{ request.user.username }}</h1>
-<a href="{% url 'eduprod:index' %}">Take the Quiz</a>
+<a href="{% url 'eduprod:home' %}">Take the Quiz</a>
 {% endblock %}

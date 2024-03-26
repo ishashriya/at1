@@ -1,20 +1,43 @@
 {% extends "eduprod/layout.html" %}
-
 {% block body %}
-<div>
-    <form id="ageForm">
-        <label for="age">Select your age:</label>
-        <select id="age" name="age">
-            <option value="">Please select</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-        </select>
-        <br><br>
-        <input type="button" value="Submit" onclick="redirectToPage()">
-    </form>
-</div>
+<div class="content">
+    <div id="anels">
+        <div id="Panel1">
+            <h1>Site Title</h1>
+            <p>Welcome to my website</p>
+            <form id="ageForm">
+                <label for="age">Select your age:</label>
+                <select id="age" name="age">
+                    <option value="">Please select</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                </select>
+            </form>
+        </div>
+        <div id="Addition">
+            <h1>Addition</h1>
+            <p>Option 3 and 4 from the dropdown above should display this panel</p>
+        </div>
+        <div id="Subtraction">
+            <h1>Subtraction</h1>
+            <p>Page Text</p>
+        </div>
+        <div id="Multiplication">
+            <h1>Multiplication</h1>
+            <p>Page Text</p>
+        </div>        
+        <div id="Division">
+            <h1>Division</h1>
+            <p>Page Text</p>
+        </div>
+    </div>
+</div> 
+<script>
+
+
+</script>  
 {% endblock %}
