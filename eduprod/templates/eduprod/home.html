@@ -38,15 +38,22 @@
             <h1>Division</h1>
             <p>Option 7 and 8 from the dropdown above should display this panel</p>
         </div>
+        <div id="quizPanel" style="display: none;">
+            <h1>Quiz Panel</h1>
+            <div id="questionContainer"></div>
+            <button id="revealBtn">Reveal Answer</button>
+        </div>
     </div>
 </div> 
 <script>
     document.getElementById('ageForm').addEventListener('change', function() {
         var ageValue = parseInt(document.getElementById('age').value);
         
-        // Hide Panel 1
-        document.getElementById('Panel1').style.display = 'none';
-        
+        // Hide all panels initially
+        document.querySelectorAll('#panels > div').forEach(function(panel) {
+            panel.style.display = 'none';
+        });
+
         // Show the appropriate panel based on the selected age
         if (ageValue === 3 || ageValue === 4) {
             document.getElementById('EarlyLearning').style.display = 'block';
@@ -56,7 +63,59 @@
         } else if (ageValue === 7 || ageValue === 8) {
             document.getElementById('Multiplication').style.display = 'block';
             document.getElementById('Division').style.display = 'block';
+        } else {
+            // If age is not within expected range, show default panel
+            document.getElementById('Panel1').style.display = 'block';
+        }
+        
+        // Show the quiz panel if age is selected
+        if (ageValue >= 3 && ageValue <= 8) {
+            document.getElementById('quizPanel').style.display = 'block';
+            fetchQuestions(ageValue);
         }
     });
+
+    function fetchQuestions(age) {
+        // Make an AJAX request to fetch questions for the selected age from Django backend
+        fetch(`/get_questions/?age=${age}`)
+            .then(response => response.json())
+            .then(data => {
+                displayQuestion(data);
+            })
+            .catch(error => console.error('Error fetching questions:', error));
+    }
+
+    function displayQuestion(questions) {
+        let currentQuestionIndex = 0;
+        const questionContainer = document.getElementById('questionContainer');
+        const btn = document.getElementById('revealBtn');
+
+        function showQuestion() {
+            const question = questions[currentQuestionIndex];
+            if (question) {
+                questionContainer.innerHTML = `
+                    <div class='question'>Question: ${question.question_text}</div>
+                    <div class='answer' style='display: none;'>Answer: ${question.answer_text}</div>
+                `;
+                btn.textContent = "Reveal Answer";
+            } else {
+                questionContainer.innerHTML = "No more questions.";
+                btn.style.display = "none";
+            }
+        }
+
+        showQuestion();
+
+        btn.addEventListener("click", function() {
+            const answerElement = questionContainer.querySelector('.answer');
+            if (btn.textContent === "Reveal Answer") {
+                answerElement.style.display = "block";
+                btn.textContent = "Next Question";
+            } else {
+                currentQuestionIndex++;
+                showQuestion();
+            }
+        });
+    }
 </script>  
 {% endblock %}
