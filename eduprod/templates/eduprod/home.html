@@ -16,34 +16,5 @@
         <br><br>
         <input type="button" value="Submit" onclick="redirectToPage()">
     </form>
-
-    <script>
-        function redirectToPage() {
-            var age = document.getElementById("age").value;
-            switch (age) {
-                case "3":
-                    window.location.href = "home3-4";
-                    break;
-                case "4":
-                    window.location.href = "home3-4";
-                    break;
-                case "5":
-                    window.location.href = "home5-6";
-                    break;
-                case "6":
-                    window.location.href = "home5-6";
-                    break;
-                case "7":
-                    window.location.href = "home7-8";
-                    break;
-                case "8":
-                    window.location.href = "home7-8";
-                    break;
-                default:
-                    alert("Please select your age.");
-                    break;
-            }
-        }
-    </script>
 </div>
 {% endblock %}

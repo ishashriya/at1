@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
-    answer_text = models.TextField()
+    answer_text = models.CharField(max_length=200)
 
     def __str__(self):
         return self.question_text
