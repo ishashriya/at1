@@ -1,7 +1,7 @@
 {% extends "eduprod/layout.html" %}
 {% block body %}
 <div class="content">
-    <div id="anels">
+    <div id="panels">
         <div id="Panel1">
             <h1>Site Title</h1>
             <p>Welcome to my website</p>
@@ -18,26 +18,45 @@
                 </select>
             </form>
         </div>
-        <div id="Addition">
-            <h1>Addition</h1>
+        <div id="EarlyLearning" style="display: none;">
+            <h1>Early Learning</h1>
             <p>Option 3 and 4 from the dropdown above should display this panel</p>
         </div>
-        <div id="Subtraction">
-            <h1>Subtraction</h1>
-            <p>Page Text</p>
+        <div id="Addition" style="display: none;">
+            <h1>Addition</h1>
+            <p>Option 5 and 6 from the dropdown above should display this panel</p>
         </div>
-        <div id="Multiplication">
+        <div id="Subtraction" style="display: none;">
+            <h1>Subtraction</h1>
+            <p>Option 5 and 6 from the dropdown above should display this panel</p>
+        </div>
+        <div id="Multiplication" style="display: none;">
             <h1>Multiplication</h1>
-            <p>Page Text</p>
+            <p>Option 7 and 8 from the dropdown above should display this panel</p>
         </div>        
-        <div id="Division">
+        <div id="Division" style="display: none;">
             <h1>Division</h1>
-            <p>Page Text</p>
+            <p>Option 7 and 8 from the dropdown above should display this panel</p>
         </div>
     </div>
 </div> 
 <script>
-
-
+    document.getElementById('ageForm').addEventListener('change', function() {
+        var ageValue = parseInt(document.getElementById('age').value);
+        
+        // Hide Panel 1
+        document.getElementById('Panel1').style.display = 'none';
+        
+        // Show the appropriate panel based on the selected age
+        if (ageValue === 3 || ageValue === 4) {
+            document.getElementById('EarlyLearning').style.display = 'block';
+        } else if (ageValue === 5 || ageValue === 6) {
+            document.getElementById('Addition').style.display = 'block';
+            document.getElementById('Subtraction').style.display = 'block';
+        } else if (ageValue === 7 || ageValue === 8) {
+            document.getElementById('Multiplication').style.display = 'block';
+            document.getElementById('Division').style.display = 'block';
+        }
+    });
 </script>  
 {% endblock %}
