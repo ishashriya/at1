@@ -6,8 +6,12 @@ from django.db import migrations, models
 
 class Question(models.Model):
     topics = [
+        ('Shapes', '#'),
         ('Addition', '+'),
-        ('Subtraction', '-')
+        ('Subtraction', '-'),
+        ('Multiplication', '*'),
+        ('Divison', '/'),
+
     ]
     AGE_CHOICES = [
         ('3', '3 years old'),

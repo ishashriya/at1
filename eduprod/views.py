@@ -7,19 +7,13 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 
 
-@login_required
-def home(request):
-    questions = Question.objects.all()
-    questions_json = serializers.serialize('json', questions)
-    return render(request, 'eduprod/home.html', {'questions_json': questions_json})
-
-@login_required
+@login_required(login_url='/accounts/signup')
 def home(request):
     return render(request, 'eduprod/home.html')
 
-@login_required
+@login_required(login_url='/accounts/signup')
 def get_questions(request):
-    age = request.GET.get('age')
-    questions = Question.objects.filter(age=age)
-    questions_data = serializers.serialize('json', questions)
-    return JsonResponse(questions_data, safe=False)
+    topic = request.GET.get('topic')
+    questions = Question.objects.filter(topic=topic)  # Assuming 'topic' is a field in your Question model
+    data = [{'question_text': question.question_text} for question in questions]
+    return JsonResponse(data, safe=False)

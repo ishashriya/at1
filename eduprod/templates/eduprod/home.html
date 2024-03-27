@@ -18,30 +18,40 @@
                 </select>
             </form>
         </div>
-        <div id="EarlyLearning" style="display: none;">
-            <h1>Early Learning</h1>
-            <p>Option 3 and 4 from the dropdown above should display this panel</p>
+        <div id="EarlyLearning" class="quiz-panel" style="display: none;">
+            <h1>Early Learning Quiz</h1>
+            <div id="earlyLearningQuestions">
+                <!-- Questions will be dynamically inserted here -->
+            </div>
+            <button class="startQuizBtn">Start Quiz</button>
         </div>
-        <div id="Addition" style="display: none;">
-            <h1>Addition</h1>
-            <p>Option 5 and 6 from the dropdown above should display this panel</p>
+        <div id="Addition" class="quiz-panel" style="display: none;">
+            <h1>Addition Quiz</h1>
+            <div id="additionQuestions">
+                <!-- Questions will be dynamically inserted here -->
+            </div>
+            <button class="startQuizBtn">Start Quiz</button>
         </div>
-        <div id="Subtraction" style="display: none;">
-            <h1>Subtraction</h1>
-            <p>Option 5 and 6 from the dropdown above should display this panel</p>
+        <div id="Subtraction" class="quiz-panel" style="display: none;">
+            <h1>Subtraction Quiz</h1>
+            <div id="subtractionQuestions">
+                <!-- Questions will be dynamically inserted here -->
+            </div>
+            <button class="startQuizBtn">Start Quiz</button>
         </div>
-        <div id="Multiplication" style="display: none;">
-            <h1>Multiplication</h1>
-            <p>Option 7 and 8 from the dropdown above should display this panel</p>
-        </div>        
-        <div id="Division" style="display: none;">
-            <h1>Division</h1>
-            <p>Option 7 and 8 from the dropdown above should display this panel</p>
+        <div id="Multiplication" class="quiz-panel" style="display: none;">
+            <h1>Multiplication Quiz</h1>
+            <div id="multiplicationQuestions">
+                <!-- Questions will be dynamically inserted here -->
+            </div>
+            <button class="startQuizBtn">Start Quiz</button>
         </div>
-        <div id="quizPanel" style="display: none;">
-            <h1>Quiz Panel</h1>
-            <div id="questionContainer"></div>
-            <button id="revealBtn">Reveal Answer</button>
+        <div id="Division" class="quiz-panel" style="display: none;">
+            <h1>Division Quiz</h1>
+            <div id="divisionQuestions">
+                <!-- Questions will be dynamically inserted here -->
+            </div>
+            <button class="startQuizBtn">Start Quiz</button>
         </div>
     </div>
 </div> 
@@ -49,8 +59,11 @@
     document.getElementById('ageForm').addEventListener('change', function() {
         var ageValue = parseInt(document.getElementById('age').value);
         
+        // Hide the age selection form
+        document.getElementById('Panel1').style.display = 'none';
+
         // Hide all panels initially
-        document.querySelectorAll('#panels > div').forEach(function(panel) {
+        document.querySelectorAll('.quiz-panel').forEach(function(panel) {
             panel.style.display = 'none';
         });
 
@@ -63,59 +76,46 @@
         } else if (ageValue === 7 || ageValue === 8) {
             document.getElementById('Multiplication').style.display = 'block';
             document.getElementById('Division').style.display = 'block';
-        } else {
-            // If age is not within expected range, show default panel
-            document.getElementById('Panel1').style.display = 'block';
         }
-        
+
         // Show the quiz panel if age is selected
         if (ageValue >= 3 && ageValue <= 8) {
-            document.getElementById('quizPanel').style.display = 'block';
-            fetchQuestions(ageValue);
+            document.querySelector('.startQuizBtn').style.display = 'block';
         }
     });
 
-    function fetchQuestions(age) {
-        // Make an AJAX request to fetch questions for the selected age from Django backend
-        fetch(`/get_questions/?age=${age}`)
+    // Function to fetch questions from the database
+    function fetchQuestions(topic) {
+        // Make an AJAX request to fetch questions for the selected topic
+        fetch(`/get_questions/?topic=${topic}`)
             .then(response => response.json())
             .then(data => {
-                displayQuestion(data);
+                displayQuestions(data, topic);
             })
             .catch(error => console.error('Error fetching questions:', error));
     }
 
-    function displayQuestion(questions) {
-        let currentQuestionIndex = 0;
-        const questionContainer = document.getElementById('questionContainer');
-        const btn = document.getElementById('revealBtn');
+    // Function to display questions in the quiz panel
+    function displayQuestions(questions, topic) {
+        const questionsContainer = document.getElementById(`${topic.toLowerCase()}Questions`);
+        // Clear existing content
+        questionsContainer.innerHTML = '';
 
-        function showQuestion() {
-            const question = questions[currentQuestionIndex];
-            if (question) {
-                questionContainer.innerHTML = `
-                    <div class='question'>Question: ${question.question_text}</div>
-                    <div class='answer' style='display: none;'>Answer: ${question.answer_text}</div>
-                `;
-                btn.textContent = "Reveal Answer";
-            } else {
-                questionContainer.innerHTML = "No more questions.";
-                btn.style.display = "none";
-            }
-        }
-
-        showQuestion();
-
-        btn.addEventListener("click", function() {
-            const answerElement = questionContainer.querySelector('.answer');
-            if (btn.textContent === "Reveal Answer") {
-                answerElement.style.display = "block";
-                btn.textContent = "Next Question";
-            } else {
-                currentQuestionIndex++;
-                showQuestion();
-            }
+        // Iterate through each question and append to container
+        questions.forEach(question => {
+            const questionElement = document.createElement('div');
+            questionElement.classList.add('question');
+            questionElement.textContent = question.question_text;
+            questionsContainer.appendChild(questionElement);
         });
     }
+
+    // Add event listener to Start Quiz button for each panel
+    document.querySelectorAll('.startQuizBtn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var topic = btn.parentElement.getAttribute('id');
+            fetchQuestions(topic);
+        });
+    });
 </script>  
 {% endblock %}
