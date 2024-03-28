@@ -13,11 +13,13 @@
             <img src="{% static 'users/logo.gif' %}" alt="Logo">
         </div>
         <div class="user-info">
-            <span>{{ user.username }}</span>
-            <form action="{% url 'users:logout' %}" method="post" style="margin: 0; margin-left: 20px;">
-                {% csrf_token %}
-                <button type="submit">Log out</button>
-            </form>
+            {% if user.is_authenticated %}
+                <span>{{ user.username }}</span>
+                <form action="{% url 'users:logout' %}" method="post" style="margin: 0; margin-left: 20px;">
+                    {% csrf_token %}
+                    <button type="submit">Log out</button>
+                </form>
+            {% endif %}
         </div>
     </div>
     {% if messages %}

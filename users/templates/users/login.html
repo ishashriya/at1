@@ -1,9 +1,49 @@
 {% extends "users/layout.html" %}
 {% block body %}
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        .password-container {
+            position: relative;
+            display: inline-block;
+        }
+        .password-input {
+            padding-right: 30px; /* Adjust as needed */
+        }
+        .password-toggle {
+            position: absolute;
+            top: 50%;
+            right: 5px; /* Adjust as needed */
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
 <form action="{% url 'users:login' %}" method="post">
     {% csrf_token %}
-    <input type="text" name="username" placeholder="Username">
-    <input type="password" name="password" placeholder="Password">
+    <div class="password-container">
+        <input type="text" name="username" placeholder="Username">
+        <input type="password" name="password" id="password" class="password-input" placeholder="Password">
+        <span class="password-toggle fa fa-fw fa-eye-slash toggle-password"></span>
+    </div>
     <input type="submit" value="Login">
 </form>
+
+<script>
+    // Toggle password visibility
+    document.querySelector('.toggle-password').addEventListener('click', function () {
+        var passwordInput = document.getElementById('password');
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            this.classList.remove('fa-eye-slash');
+            this.classList.add('fa-eye');
+        } else {
+            passwordInput.type = 'password';
+            this.classList.remove('fa-eye');
+            this.classList.add('fa-eye-slash');
+        }
+    });
+</script>
+</body>
 {% endblock %}
