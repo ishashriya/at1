@@ -6,6 +6,27 @@
     <title>Q&A</title>
     <link href="{% static 'users/styles.css' %}" rel="stylesheet">
     <script src="{% static 'eduprod/scripts.js' %}" defer></script>
+    <style>
+        .header {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 50px; /* Adjust as needed */
+            /* Add other logo styles here */
+        }
+
+        .home-button {
+            margin-left: 10px; /* Adjust as needed */
+            /* Add other home button styles here */
+        }
+
+        .user-info {
+            margin-left: auto;
+            /* Add user info styles here */
+        }
+    </style>
 </head>
 
 <body>
@@ -13,6 +34,7 @@
         <div class="logo">
             <img src="{% static 'users/logo.gif' %}" alt="Logo">
         </div>
+        <a href="{% url 'eduprod:home' %}" class="home-button">Home</a>
         <div class="user-info">
             <span>{{ user.username }}</span>
             <form action="{% url 'users:logout' %}" method="post" style="margin: 0; margin-left: 20px;">
@@ -29,9 +51,7 @@
     </ul>
     {% endif %}
 
-
     {% block body %}
-    <!-- insert code that depends on what i selected from the dropdown on the previous page-->
     {% endblock %}
 </body>
 
