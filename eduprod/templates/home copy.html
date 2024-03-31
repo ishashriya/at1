@@ -1,0 +1,410 @@
+{% extends "eduprod/layout.html" %}
+{% block body %}
+<div class="content">
+    <div id="panels">
+        <div id="panel1">
+            <h1>Site Title</h1>
+            <p>Welcome to my website</p>
+            <form id="ageForm">
+                <label for="age">Select your age:</label>
+                <select id="age" name="age">
+                    <option value="">Please select</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                </select>
+            </form>
+        </div>
+        <div id="EarlyLearning" class="quiz-panel" style="display: none;">
+            <h1>Early Learning Quiz</h1>
+            {% for question in questions %}
+                <li>{{ question }}</li>
+                <li>{{ question.questionText}}</li>
+            {% endfor %}
+            <div id="earlylearningQuestions">
+                <!-- Questions will be dynamically inserted here -->
+            </div>
+            <div id="navBtn">
+                <button class="nextBtn">Next</button>
+                <button class="previousBtn">Previous</button>
+                <button class="submitBtn">Submit</button>
+            </div>
+
+            <div id="revealBtn">
+                <button class="revealBtn">Reveal Answer</button>
+            </div>
+            <button class="startQuizBtn">Start Quiz</button>
+        </div>
+       
+        <div id="Addition" class="quiz-panel" style="display: none;">
+            <h1>Addition Quiz</h1>
+            <div id="additionQuestions">
+                <!-- Questions will be dynamically inserted here -->
+            </div>
+            <button class="startQuizBtn">Start Quiz</button>
+        </div>
+        <div id="Subtraction" class="quiz-panel" style="display: none;">
+            <h1>Subtraction Quiz</h1>
+            <div id="subtractionQuestions">
+                <!-- Questions will be dynamically inserted here -->
+            </div>
+            <button class="startQuizBtn">Start Quiz</button>
+        </div>
+        <div id="Multiplication" class="quiz-panel" style="display: none;">
+            <h1>Multiplication Quiz</h1>
+            <div id="multiplicationQuestions">
+                <!-- Questions will be dynamically inserted here -->
+            </div>
+            <button class="startQuizBtn">Start Quiz</button>
+        </div>
+        <div id="Division" class="quiz-panel" style="display: none;">
+            <h1>Division Quiz</h1>
+            <div id="divisionQuestions">
+                <!-- Questions will be dynamically inserted here -->
+            </div>
+            <button class="startQuizBtn">Start Quiz</button>
+        </div>
+    </div>
+</div> 
+<script>
+    document.getElementById('ageForm').addEventListener('change', function() {
+        var ageValue = parseInt(document.getElementById('age').value);
+        
+        // Hide the age selection form
+        document.getElementById('panel1').style.display = 'none';
+
+        // Hide all panels initially
+        document.querySelectorAll('.quiz-panel').forEach(function(panel) {
+            panel.style.display = 'none';
+        });
+
+        // Show the appropriate panel based on the selected age
+        if (ageValue === 3 || ageValue === 4) {
+            document.getElementById('EarlyLearning').style.display = 'block';
+        } else if (ageValue === 5 || ageValue === 6) {
+            document.getElementById('Addition').style.display = 'block';
+            document.getElementById('Subtraction').style.display = 'block';
+        } else if (ageValue === 7 || ageValue === 8) {
+            document.getElementById('Multiplication').style.display = 'block';
+            document.getElementById('Division').style.display = 'block';
+        }
+
+        // Show the quiz panel if age is selected
+        if (ageValue >= 3 && ageValue <= 8) {
+            document.querySelector('.startQuizBtn').style.display = 'block';
+        }
+    });
+    // Add event listener to Start Quiz button for each panel
+    document.querySelectorAll('.startQuizBtn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var topic = btn.parentElement.getAttribute('id');
+            fetchQuestions(topic);
+        });
+    });
+
+    // Function to fetch questions from the database
+    function fetchQuestions(topic) {
+        // Make an AJAX request to fetch questions for the selected topic
+        fetch(`get_questions/?topic=${topic}`)
+            .then(response => response.json())
+            .then(data => {
+                displayQuestions4(data, topic);
+            })
+            .catch(error => console.error('Error fetching questions:', error));
+    }
+
+function updateQuestionDiv(questions, divId) {
+    const questionsContainer = document.getElementById(divId);
+    questionsContainer.innerHTML = '';
+
+    questions.forEach(question => {
+        const questionElement = document.createElement('h2');
+        questionElement.innerHTML = question.question_text;
+        questionsContainer.appendChild(questionElement);
+
+        const optionsContainer = document.createElement('div');
+        optionsContainer.classList.add('options');
+         question.options.forEach(option => {
+             const optionElement = document.createElement('div');
+             optionElement.classList.add('option');
+             optionElement.innerHTML = option.option_text;
+             optionElement.dataset.optionId = option.id;
+             optionsContainer.appendChild(optionElement);
+         });
+        questionsContainer.appendChild(optionsContainer);
+    });
+}
+
+function updateQuestionDiv2(questions, topic, currentQuestionIndex) {
+
+        const content = document.getElementById(`${topic}`);
+        const btn = document.getElementById('revealBtn');
+         if (currentQuestionIndex < questions.length) {
+             const question = questions[currentQuestionIndex].question_text;
+             const answer_choice1 = questions[currentQuestionIndex].answer_choice1;
+             const answer_choice2 = questions[currentQuestionIndex].answer_choice2;
+             const answer = questions[currentQuestionIndex].answer;
+             content.innerHTML = 
+                `<div class='question'>Question: ${question}</div>
+                <div class='answer_options'>Answer 1: ${answer_choice1}</div>
+                <div class='answer_options'>Answer 2: ${answer_choice2}</div>
+                <div class='answer' style='display: none;'>Answer: ${answer}</div>`;
+            const optionsContainer = document.createElement('div');
+                optionsContainer.classList.add('options');
+            //question.options.forEach(option => {
+             const optionElement = document.createElement('div');
+             optionElement.classList.add('option');
+             optionElement.innerHTML = answer_choice1;
+             optionElement.dataset.optionId = answer_choice1;
+             optionsContainer.appendChild(optionElement);
+         //});
+            content.appendChild(optionsContainer);
+             btn.textContent = "Reveal Answer";
+         } else {
+             content.innerHTML = "No more questions.";
+             btn.style.display = "none";
+         }
+     };
+
+    function updateQuestionDiv4(questions, topic, currentQuestionIndex) {
+    const content = document.getElementById(`${topic}`);
+    const btn = document.getElementById('revealBtn');
+    
+    if (currentQuestionIndex < questions.length) {
+        const question = questions[currentQuestionIndex].question_text;
+        const answer_choice1 = questions[currentQuestionIndex].answer_choice1;
+        const answer_choice2 = questions[currentQuestionIndex].answer_choice2;
+
+        // Update content with question and answer choices
+        content.innerHTML = `
+            <div class='question'>Question: ${question}</div>
+            <form id="answerForm">
+                <div class='answer_options'><input type="radio" name="answer" value="${answer_choice1}"> ${answer_choice1}</div>
+                <div class='answer_options'><input type="radio" name="answer" value="${answer_choice2}"> ${answer_choice2}</div>
+            </form>
+        `;
+
+        // Update button text
+        btn.textContent = "Submit Answer";
+    } else {
+        // No more questions
+        content.innerHTML = "No more questions.";
+        btn.style.display = "none";
+    }
+}
+
+
+
+// Function to create option element
+function createOption(answer) {
+    const optionElement = document.createElement('div');
+    optionElement.classList.add('option');
+    optionElement.textContent = answer;
+    optionElement.dataset.optionId = answer; // Assuming answer can serve as option ID
+    // Add event listener to option element for selection
+    optionElement.addEventListener('click', () => {
+        // Handle option selection here
+        console.log(`Selected answer: ${answer}`);
+    });
+    return optionElement;
+}
+
+
+function displayQuestions(questions, topic) {
+        let currentQuestionIndex = 0;
+
+        const content = document.getElementById(`${topic.toLowerCase()}Questions`);
+        const btn = document.getElementById('revealBtn');
+         if (currentQuestionIndex < questions.length) {
+             const question = questions[currentQuestionIndex].question_text;
+             const answer = questions[currentQuestionIndex].answer;
+             content.innerHTML = `<div class='question'>Question: ${question}</div><div class='answer' style='display: none;'>Answer: ${answer}</div>`;
+             btn.textContent = "Reveal Answer";
+         } else {
+             content.innerHTML = "No more questions.";
+             btn.style.display = "none";
+         }
+     };
+
+function displayQuestions2(questions, topic) {
+    const questionsContainer = document.getElementById(`${topic.toLowerCase()}Questions`);
+    // Clear existing content
+    questionsContainer.innerHTML = '';
+
+    // Iterate through each question and append to container
+    questions.forEach(question => {
+        updateQuestionDiv([question], `${topic.toLowerCase()}Questions`);
+    });
+}
+
+function displayQuestions4(questions, topic) {
+        let currentQuestionIndex = 0;
+
+        const nextButton = document.querySelector('.nextBtn');
+        const previousButton = document.querySelector('.previousBtn');
+        const submitButton = document.querySelector('.submitBtn');
+        
+        // Hide the "Next" button on the last page
+        if (currentQuestionIndex === questions.length - 1) {
+            nextButton.style.display = 'none';
+            submitButton.style.display = 'inline';
+        } else {
+            nextButton.style.display = 'inline';
+            submitButton.style.display = 'none';
+            }
+
+        // Handle clicking the "Previous" button
+        previousButton.addEventListener('click', () => {
+            currentQuestionIndex--;
+            // If no more questions, stay on this page
+            if (currentQuestionIndex < 0) return;
+            
+            // Update the question div with the new question
+            updateQuestionDiv(questions[currentQuestionIndex + 1].answers, `page${currentQuestionIndex + 1}`);
+            updateQuestionDiv(questions[currentQuestionIndex + 1].answers, `page${currentQuestionIndex + 1}`);
+            updateQuestionDiv(questions[currentQuestionIndex + 1].answers, `page${currentQuestionIndex}`);
+            // Show the "Next" button and hide the "Previous" button
+            nextButton.style.display = 'inline';
+            previousButton.style.display = 'none';
+            currentQuestionIndex++;
+        });
+
+        // Handle clicking the "Next" button
+        nextButton.addEventListener('click', () => {
+            currentQuestionIndex++;
+            // Update the question div with the new question
+            //updateQuestionDiv(questions[currentQuestionIndex], `page${currentQuestionIndex+1}`);
+            //updateQuestionDiv(questions[currentQuestionIndex], `${topic.toLowerCase()}Questions`);
+            updateQuestionDiv4(questions, `${topic.toLowerCase()}Questions`,currentQuestionIndex);
+            // Go to the next question index
+            //currentQuestionIndex++;
+            // If we've reached the end, hide the "Next" button and show the "Submit" button
+            //if (currentQuestionIndex === questions.length) {
+            //    nextButton.style.display = 'none';
+            //    submitButton.style.display = 'inline';
+            //} else {
+                // Otherwise, keep showing the "Next" button
+            //    nextButton.style.display = 'inline';
+            //}
+            // Reset the answer box to empty
+            //answerBox.value = '';
+        });
+        //};
+
+        updateQuestionDiv4(questions, `${topic.toLowerCase()}Questions`,currentQuestionIndex);
+     };
+
+     function displayQuestions3(questions, topic) {
+        let currentQuestionIndex = 0;
+
+        const nextButton = document.querySelector('.nextBtn');
+        const previousButton = document.querySelector('.previousBtn');
+        const submitButton = document.querySelector('.submitBtn');
+        
+        // Hide the "Next" button on the last page
+        if (currentQuestionIndex === questions.length - 1) {
+            nextButton.style.display = 'none';
+            submitButton.style.display = 'inline';
+        } else {
+            nextButton.style.display = 'inline';
+            submitButton.style.display = 'none';
+            }
+
+        // Handle clicking the "Previous" button
+        previousButton.addEventListener('click', () => {
+            currentQuestionIndex--;
+            // If no more questions, stay on this page
+            if (currentQuestionIndex < 0) return;
+            
+            // Update the question div with the new question
+            updateQuestionDiv(questions[currentQuestionIndex + 1].answers, `page${currentQuestionIndex + 1}`);
+            updateQuestionDiv(questions[currentQuestionIndex + 1].answers, `page${currentQuestionIndex + 1}`);
+            updateQuestionDiv(questions[currentQuestionIndex + 1].answers, `page${currentQuestionIndex}`);
+            // Show the "Next" button and hide the "Previous" button
+            nextButton.style.display = 'inline';
+            previousButton.style.display = 'none';
+            currentQuestionIndex++;
+        });
+
+        // Handle clicking the "Next" button
+        nextButton.addEventListener('click', () => {
+            // Update the question div with the new question
+            //updateQuestionDiv(questions[currentQuestionIndex], `page${currentQuestionIndex+1}`);
+            //updateQuestionDiv(questions[currentQuestionIndex], `${topic.toLowerCase()}Questions`);
+            updateQuestionDiv2(questions, `${topic.toLowerCase()}Questions`,currentQuestionIndex);
+            // Go to the next question index
+            currentQuestionIndex++;
+            // If we've reached the end, hide the "Next" button and show the "Submit" button
+            if (currentQuestionIndex === questions.length) {
+                nextButton.style.display = 'none';
+                submitButton.style.display = 'inline';
+            } else {
+                // Otherwise, keep showing the "Next" button
+                nextButton.style.display = 'inline';
+            }
+            // Reset the answer box to empty
+            //answerBox.value = '';
+        });
+        //};
+
+        const content = document.getElementById(`${topic.toLowerCase()}Questions`);
+        const btn = document.getElementById('revealBtn');
+         if (currentQuestionIndex < questions.length) {
+             const question = questions[currentQuestionIndex].question_text;
+             const answer = questions[currentQuestionIndex].answer;
+             content.innerHTML = `<div class='question'>Question: ${question}</div><div class='answer' style='display: none;'>Answer: ${answer}</div>`;
+             btn.textContent = "Reveal Answer";
+         } else {
+             content.innerHTML = "No more questions.";
+             btn.style.display = "none";
+         }
+     };
+
+//     displayQuestion();
+
+     //btn.addEventListener("click", function() {
+     //    const answerElement = content.querySelector('.answer');
+     //    if (btn.textContent === "Reveal Answer") {
+     //        answerElement.style.display = "block";
+     //        btn.textContent = "Next Question";
+     //    } else {
+     //        currentQuestionIndex++;
+     //        displayQuestion();
+     //    }
+    // });
+
+//     document.addEventListener("DOMContentLoaded", function() {
+//     let currentQuestionIndex = 0;
+//     const questions = JSON.parse(document.getElementById('content').getAttribute('data-questions'));
+//     const content = document.getElementById('content');
+//     const btn = document.getElementById('revealBtn');
+// });
+
+    // Function to display questions in the quiz panel
+    // function displayQuestions(questions, topic) {
+    //     const questionsContainer = document.getElementById(`${topic.toLowerCase()}Questions`);
+    //     // Clear existing content
+    //     questionsContainer.innerHTML = '';
+
+    //     // Iterate through each question and append to container
+    //     questions.forEach(question => {
+    //         alert("displayQuestions2=")
+    //         const questionElement = document.createElement('div');
+    //         // questionElement.classList.add('question');
+    //         // questionElement.innerHTML = `<img src="${question.image_url}" alt="${question.questionText}"><br>`;
+    //         questionsContainer.appendChild(questionElement);
+    //     });
+    // }
+
+    // Add event listener to Start Quiz button for each panel
+    // document.querySelectorAll('.startQuizBtn').forEach(function(btn) {
+    //     btn.addEventListener('click', function() {
+    //         var topic = btn.parentElement.getAttribute('id');
+    //         fetchQuestions(topic);
+    //     });
+    // });
+</script>  
+{% endblock %}

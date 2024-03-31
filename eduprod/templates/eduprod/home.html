@@ -2,7 +2,7 @@
 {% block body %}
 <div class="content">
     <div id="panels">
-        <div id="Panel1">
+        <div id="panel1">
             <h1>Site Title</h1>
             <p>Welcome to my website</p>
             <form id="ageForm">
@@ -20,11 +20,12 @@
         </div>
         <div id="EarlyLearning" class="quiz-panel" style="display: none;">
             <h1>Early Learning Quiz</h1>
-            <div id="earlyLearningQuestions">
+            <div id="earlylearningQuestions">
                 <!-- Questions will be dynamically inserted here -->
             </div>
             <button class="startQuizBtn">Start Quiz</button>
         </div>
+       
         <div id="Addition" class="quiz-panel" style="display: none;">
             <h1>Addition Quiz</h1>
             <div id="additionQuestions">
@@ -53,6 +54,17 @@
             </div>
             <button class="startQuizBtn">Start Quiz</button>
         </div>
+        <div id="Answer" class="quiz-panel" style="display: none;">
+            <h1>Answer</h1>
+            <div id="UserAnswer">
+                <!-- Answer will be dynamically inserted here -->
+            </div>
+        </div>
+        <div id="navBtn" class="quiz-panel" style="display: none;">
+            <button class="revealBtn" onclick="">Check Answer</button>
+            <button class="nextBtn">Next</button>
+            <button class="submitBtn">Finish</button>
+        </div>
     </div>
 </div> 
 <script>
@@ -60,7 +72,7 @@
         var ageValue = parseInt(document.getElementById('age').value);
         
         // Hide the age selection form
-        document.getElementById('Panel1').style.display = 'none';
+        document.getElementById('panel1').style.display = 'none';
 
         // Hide all panels initially
         document.querySelectorAll('.quiz-panel').forEach(function(panel) {
@@ -83,33 +95,6 @@
             document.querySelector('.startQuizBtn').style.display = 'block';
         }
     });
-
-    // Function to fetch questions from the database
-    function fetchQuestions(topic) {
-        // Make an AJAX request to fetch questions for the selected topic
-        fetch(`/get_questions/?topic=${topic}`)
-            .then(response => response.json())
-            .then(data => {
-                displayQuestions(data, topic);
-            })
-            .catch(error => console.error('Error fetching questions:', error));
-    }
-
-    // Function to display questions in the quiz panel
-    function displayQuestions(questions, topic) {
-        const questionsContainer = document.getElementById(`${topic.toLowerCase()}Questions`);
-        // Clear existing content
-        questionsContainer.innerHTML = '';
-
-        // Iterate through each question and append to container
-        questions.forEach(question => {
-            const questionElement = document.createElement('div');
-            questionElement.classList.add('question');
-            questionElement.textContent = question.question_text;
-            questionsContainer.appendChild(questionElement);
-        });
-    }
-
     // Add event listener to Start Quiz button for each panel
     document.querySelectorAll('.startQuizBtn').forEach(function(btn) {
         btn.addEventListener('click', function() {
@@ -117,5 +102,134 @@
             fetchQuestions(topic);
         });
     });
+
+    // Function to fetch questions from the database
+    function fetchQuestions(topic) {
+        // Make an AJAX request to fetch questions for the selected topic
+        fetch(`get_questions/?topic=${topic}`)
+            .then(response => response.json())
+            .then(data => {
+                displayQuestions(data, topic);
+            })
+            .catch(error => console.error('Error fetching questions:', error));
+    }
+
+
+
+
+    function updateQuestionDiv(questions, topic, currentQuestionIndex) {
+        const content = document.getElementById(`${topic}`);
+        const revealBtn = document.querySelector('.revealBtn');
+        const nextButton = document.querySelector('.nextBtn');
+        const submitButton = document.querySelector('.submitBtn');
+        document.getElementById('Answer').style.display = 'none';
+        
+        if (currentQuestionIndex < questions.length) {
+            const question = questions[currentQuestionIndex].question_text;
+            const answer_choice1 = questions[currentQuestionIndex].answer_choice1;
+            const answer_choice2 = questions[currentQuestionIndex].answer_choice2;
+            const answer_choice3 = questions[currentQuestionIndex].answer_choice3;
+            const answer_choice4 = questions[currentQuestionIndex].answer_choice4;
+
+            // Update content with question and answer choices
+            content.innerHTML = `
+                <div class='question'>Question: ${question}</div>
+                <form id="answerForm">
+                    <div class='answer_options'><input type="radio" name="answer" value="${answer_choice1}"> ${answer_choice1}</div>
+                    <div class='answer_options'><input type="radio" name="answer" value="${answer_choice2}"> ${answer_choice2}</div>
+                    <div class='answer_options'><input type="radio" name="answer" value="${answer_choice3}"> ${answer_choice3}</div>
+                    <div class='answer_options'><input type="radio" name="answer" value="${answer_choice4}"> ${answer_choice4}</div>
+                </form>
+            `;
+            
+            //document.getElementById('navBtn').style.display = 'block';
+            
+            // Update button text
+            //btn.textContent = "Submit Answer";
+            revealBtn.style.display="block";
+            nextButton.style.display = 'none';
+        } else {
+            // No more questions
+            content.innerHTML = "Your score is ABC";
+            nextButton.style.display = 'none';
+            revealBtn.style.display = "none";
+            submitButton.style.display = 'block';
+            //document.querySelector('.startQuizBtn').style.display = 'block';
+        }
+}
+
+function displayQuestions(questions, topic) {
+        let currentQuestionIndex = 0;
+
+        document.querySelector('.startQuizBtn').style.display = 'none';
+        //document.querySelector('.navBtn').style.display = 'block';
+        document.getElementById('navBtn').style.display = 'block';
+        const nextButton = document.querySelector('.nextBtn');
+        const revealButton = document.querySelector('.revealBtn');
+        const submitButton = document.querySelector('.submitBtn');
+        submitButton.style.display = 'none';
+        nextButton.style.display="none";
+
+        // Handle clicking the "Next" button
+        nextButton.addEventListener('click', () => {
+            currentQuestionIndex++;
+            // Update the question div with the new question
+            updateQuestionDiv(questions, `${topic.toLowerCase()}Questions`,currentQuestionIndex);
+        });
+
+        // Handle clicking the "Check Answser" button
+        revealButton.addEventListener('click', () => {
+            // Check answer from service
+            document.getElementById('Answer').style.display = 'block';
+            nextButton.style.display = 'block';
+            revealButton.style.display="none";
+        });
+
+        updateQuestionDiv(questions, `${topic.toLowerCase()}Questions`,currentQuestionIndex);
+     };
+
+//     displayQuestion();
+
+     //btn.addEventListener("click", function() {
+     //    const answerElement = content.querySelector('.answer');
+     //    if (btn.textContent === "Reveal Answer") {
+     //        answerElement.style.display = "block";
+     //        btn.textContent = "Next Question";
+     //    } else {
+     //        currentQuestionIndex++;
+     //        displayQuestion();
+     //    }
+    // });
+
+//     document.addEventListener("DOMContentLoaded", function() {
+//     let currentQuestionIndex = 0;
+//     const questions = JSON.parse(document.getElementById('content').getAttribute('data-questions'));
+//     const content = document.getElementById('content');
+//     const btn = document.getElementById('revealBtn');
+// });
+
+    // Function to display questions in the quiz panel
+    // function displayQuestions(questions, topic) {
+    //     const questionsContainer = document.getElementById(`${topic.toLowerCase()}Questions`);
+    //     // Clear existing content
+    //     questionsContainer.innerHTML = '';
+
+    //     // Iterate through each question and append to container
+    //     questions.forEach(question => {
+    //         alert("displayQuestions2=")
+    //         const questionElement = document.createElement('div');
+    //         // questionElement.classList.add('question');
+    //         // questionElement.innerHTML = `<img src="${question.image_url}" alt="${question.questionText}"><br>`;
+    //         questionsContainer.appendChild(questionElement);
+    //     });
+    // }
+
+    // Add event listener to Start Quiz button for each panel
+    // document.querySelectorAll('.startQuizBtn').forEach(function(btn) {
+    //     btn.addEventListener('click', function() {
+    //         var topic = btn.parentElement.getAttribute('id');
+    //         fetchQuestions(topic);
+    //     });
+    // });
 </script>  
 {% endblock %}
