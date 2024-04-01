@@ -55,7 +55,7 @@
             <button class="startQuizBtn">Start Quiz</button>
         </div>
         <div id="Answer" class="quiz-panel" style="display: none;">
-            <h1>Answer</h1>
+            <h2>Answer</h2>
             <div id="UserAnswer">
                 <!-- Answer will be dynamically inserted here -->
             </div>
@@ -117,7 +117,7 @@
 
 
 
-    function updateQuestionDiv(questions, topic, currentQuestionIndex) {
+    function updateQuestionDiv(questions, topic, currentQuestionIndex, user_answer) {
         const content = document.getElementById(`${topic}`);
         const revealBtn = document.querySelector('.revealBtn');
         const nextButton = document.querySelector('.nextBtn');
@@ -133,7 +133,8 @@
 
             // Update content with question and answer choices
             content.innerHTML = `
-                <div class='question'>Question: ${question}</div>
+                <h2>Question</h2>
+                <div class='question'>${question}</div>
                 <form id="answerForm">
                     <div class='answer_options'><input type="radio" name="answer" value="${answer_choice1}"> ${answer_choice1}</div>
                     <div class='answer_options'><input type="radio" name="answer" value="${answer_choice2}"> ${answer_choice2}</div>
@@ -150,7 +151,11 @@
             nextButton.style.display = 'none';
         } else {
             // No more questions
-            content.innerHTML = "Your score is ABC";
+            content.innerHTML =  `
+                <h2>Scorecard</h2> 
+                <div class='question'>Your score is ${user_answer.score}</div>
+            `;
+            
             nextButton.style.display = 'none';
             revealBtn.style.display = "none";
             submitButton.style.display = 'block';
@@ -158,35 +163,62 @@
         }
 }
 
-function displayQuestions(questions, topic) {
-        let currentQuestionIndex = 0;
+function displayQuestions(data, topic) {
+    questions = data['questions']
+    user_answer = data['user_answer']
+    let currentQuestionIndex = 0;
+    let score = 0;
 
-        document.querySelector('.startQuizBtn').style.display = 'none';
-        //document.querySelector('.navBtn').style.display = 'block';
-        document.getElementById('navBtn').style.display = 'block';
-        const nextButton = document.querySelector('.nextBtn');
-        const revealButton = document.querySelector('.revealBtn');
-        const submitButton = document.querySelector('.submitBtn');
-        submitButton.style.display = 'none';
-        nextButton.style.display="none";
+    document.querySelector('.startQuizBtn').style.display = 'none';
+    //document.querySelector('.navBtn').style.display = 'block';
+    document.getElementById('navBtn').style.display = 'block';
+    const nextButton = document.querySelector('.nextBtn');
+    const revealButton = document.querySelector('.revealBtn');
+    const submitButton = document.querySelector('.submitBtn');
+    submitButton.style.display = 'none';
+    nextButton.style.display="none";
 
-        // Handle clicking the "Next" button
-        nextButton.addEventListener('click', () => {
-            currentQuestionIndex++;
-            // Update the question div with the new question
-            updateQuestionDiv(questions, `${topic.toLowerCase()}Questions`,currentQuestionIndex);
-        });
+    // Handle clicking the "Next" button
+    nextButton.addEventListener('click', () => {
+        currentQuestionIndex++;
+        // Update the question div with the new question
+        updateQuestionDiv(questions, `${topic.toLowerCase()}Questions`,currentQuestionIndex,user_answer);
+    });
 
-        // Handle clicking the "Check Answser" button
-        revealButton.addEventListener('click', () => {
-            // Check answer from service
-            document.getElementById('Answer').style.display = 'block';
-            nextButton.style.display = 'block';
-            revealButton.style.display="none";
-        });
+    // Handle clicking the "Check Answser" button
+    revealButton.addEventListener('click', () => {
+        // get user selected answer
+        const selectedAnswer = getSelectedAnswer();
+        if (selectedAnswer == (questions[currentQuestionIndex].answer)) {
+            user_answer.score++
+        }
+        document.getElementById('Answer').style.display = 'block';
+        const answer = document.getElementById('UserAnswer');
+        answer.innerHTML=`
+            <div class='answer'>Answer is : ${questions[currentQuestionIndex].answer}</div>
+            <div class='answer'>Your score is : ${user_answer.score}</div>
+        `;
+        nextButton.style.display = 'block';
+        revealButton.style.display="none";
+    });
 
-        updateQuestionDiv(questions, `${topic.toLowerCase()}Questions`,currentQuestionIndex);
-     };
+    updateQuestionDiv(questions, `${topic.toLowerCase()}Questions`,currentQuestionIndex,user_answer);
+};
+
+function getSelectedAnswer() {
+  const form = document.getElementById('answerForm');
+  const radioButtons = form.elements['answer'];
+  let selectedAnswer = null;
+
+  for (let i = 0; i < radioButtons.length; i++) {
+    if (radioButtons[i].checked) {
+      selectedAnswer = radioButtons[i].value;
+      break;
+    }
+  }
+
+  return selectedAnswer;
+  };
 
 //     displayQuestion();
 

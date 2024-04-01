@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 from django.db import migrations, models
+from django.core import serializers
 
 class AnswerChoice:
     def __init__(self, answerChoice1, answerChoice2, answerChoice3, answerChoice4):
@@ -109,7 +110,20 @@ class UserQuestion1:
         def answer(self, value):
             self.answer = value
 
+class UserAnswer(models.Model):
+    id = models.CharField(primary_key=True,max_length=255)
+    answer = models.CharField(max_length=255)
+    user_answer = models.CharField(max_length=255)
+    score = models.IntegerField(default=0)
 
+    def serialize(self):
+        return {
+            'id': self.id,
+            'answer': self.answer,
+            'user_answer': self.user_answer,
+            'score': self.score,
+        }
+    
 class UserQuestion(models.Model):
     id = models.IntegerField(primary_key=True)
     question_text = models.CharField(max_length=255)
@@ -124,25 +138,59 @@ class UserQuestion(models.Model):
     
 
 class QuestionManager:
-    def __init__(self):
+    def __init__(self, topic):
+            print(topic)
+            self.topic = topic
             self.questions = []  # list of question objects
+
+    def get_questions(self):
+        if self.topic == "EarlyLearning":
+            # Implement your logic here using the topic parameter
+            #self.questions = [self.createQuestion1(), self.createQuestion2(), self.createQuestion3()]
+            print("Returning questions for " + str(self.topic))
+            self.questions = EarlyLearningQuestions.get_questions(self)
+            return self.questions
     
-    def createQuestion1():
+class EarlyLearningQuestions:
+    def __init__(self):
+        self.questions = []  # list of questions from early learning
+
+    def get_questions(self):
+        #self.addEarlyLearningQuestion(self.question1())
+        #self.addEarlyLearningQuestion(self.question2())
+        #self.addEarlyLearningQuestion(self.question3())
+        #self.questions = [self.question1(self), self.question2(), self.question3()]
+        self.questions = [
+            UserQuestion(1, "Question 1 Square", "circle", "triangle", "square", "rectangle", "square"),
+            UserQuestion(2, "Question 2 Circle", "circle", "triangle", "square", "rectangle", "circle"),
+            UserQuestion(3, "Question 3 Rectangle", "circle", "triangle", "square", "rectangle", "rectangle")
+        ]
+        return self.questions
+
+    def addEarlyLearningQuestion(self, question):
+        self.questions.append(question)
+
+    def question1(self):
         q1 = UserQuestion(1, "Question 1 Square", "circle", "triangle", "square", "rectangle", "square") # Create a question with 5 choices
         return q1
     
-    def createQuestion2():
+    def question2(self):
         q2 = UserQuestion(2, "Question 2 Circle", "circle", "triangle", "square", "rectangle", "circle") # Create a question with 5 choices
         return q2
 
-    def createQuestion3():
+    def question3(self):
         q3 = UserQuestion(3, "Question 3 Rectangle", "circle", "triangle", "square", "rectangle", "rectangle") # Create a question with 5 choices
         return q3
-    # Create question 2 and set its attributes using the function above
+
+
     
-    questions = [createQuestion1(), createQuestion2(),createQuestion3()]  
+      
 
-
+class AnswerManager:
+    def __init__(self):
+        self._answers = {}
+        
+    user_answer = UserAnswer()
 
 #         @property
 #         def is_answered(self):
