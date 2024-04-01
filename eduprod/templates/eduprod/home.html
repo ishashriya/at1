@@ -18,6 +18,12 @@
                 </select>
             </form>
         </div>
+        <div id="Question" class="quiz-panel" style="display: none;">
+            <h1>Quiz Question</h1>
+            <div id="UserQuestion">
+                <!-- Questions will be dynamically inserted here -->
+            </div>
+        </div>
         <div id="EarlyLearning" class="quiz-panel" style="display: none;">
             <h1>Early Learning Quiz</h1>
             <div id="earlylearningQuestions">
@@ -90,6 +96,9 @@
             document.getElementById('Division').style.display = 'block';
         }
 
+        // Show question panel
+        //document.getElementById('Question').style.display = 'block';
+
         // Show the quiz panel if age is selected
         if (ageValue >= 3 && ageValue <= 8) {
             document.querySelector('.startQuizBtn').style.display = 'block';
@@ -118,7 +127,8 @@
 
 
     function updateQuestionDiv(questions, topic, currentQuestionIndex, user_answer) {
-        const content = document.getElementById(`${topic}`);
+        //const content = document.getElementById(`${topic}`);
+        const content = document.getElementById(`Question`);
         const revealBtn = document.querySelector('.revealBtn');
         const nextButton = document.querySelector('.nextBtn');
         const submitButton = document.querySelector('.submitBtn');
@@ -131,9 +141,18 @@
             const answer_choice3 = questions[currentQuestionIndex].answer_choice3;
             const answer_choice4 = questions[currentQuestionIndex].answer_choice4;
 
+            heading_text = "";
+            switch (topic) {
+                case "earlylearningQuestions": 
+                    heading_text = `Early Learning Quiz Question`;
+                    break;
+                default:  
+                    heading_text = ``;
+            }
+
             // Update content with question and answer choices
             content.innerHTML = `
-                <h2>Question</h2>
+                <h2>${heading_text}</h2>
                 <div class='question'>${question}</div>
                 <form id="answerForm">
                     <div class='answer_options'><input type="radio" name="answer" value="${answer_choice1}"> ${answer_choice1}</div>
@@ -169,6 +188,11 @@ function displayQuestions(data, topic) {
     let currentQuestionIndex = 0;
     let score = 0;
 
+    const content = document.getElementById(`${topic}`);
+    content.style.display="none";
+    //if (topic )
+    document.getElementById('Question').style.display = 'block';
+    //document.getElementById('${topic}').style.display = 'none';
     document.querySelector('.startQuizBtn').style.display = 'none';
     //document.querySelector('.navBtn').style.display = 'block';
     document.getElementById('navBtn').style.display = 'block';

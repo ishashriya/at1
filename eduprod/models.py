@@ -144,12 +144,14 @@ class QuestionManager:
             self.questions = []  # list of question objects
 
     def get_questions(self):
+        print("Getting questions for " + str(self.topic))
         if self.topic == "EarlyLearning":
             # Implement your logic here using the topic parameter
             #self.questions = [self.createQuestion1(), self.createQuestion2(), self.createQuestion3()]
             print("Returning questions for " + str(self.topic))
             self.questions = EarlyLearningQuestions.get_questions(self)
             return self.questions
+        return self.questions
     
 class EarlyLearningQuestions:
     def __init__(self):
