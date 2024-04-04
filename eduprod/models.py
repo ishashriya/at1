@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django.db import migrations, models
 from django.core import serializers
 
+# Class representing the AnswerChoice
 class AnswerChoice:
     def __init__(self, answerChoice1, answerChoice2, answerChoice3, answerChoice4):
         self.answerChoice1 = answerChoice1
@@ -11,6 +12,7 @@ class AnswerChoice:
         self.answerChoice3 = answerChoice3
         self.answerChoice4 = answerChoice4
 
+        # Getter and setter methods for answer choices
         @property
         def answerChoice1(self):
             return self.answerChoice1
@@ -43,7 +45,7 @@ class AnswerChoice:
         def answerChoice4(self, value):
             self.answerChoice4 = value
         
-
+# Class representing the UserQuestion1
 class UserQuestion1:
     def __init__(self, id, questionText, answerChoice1, answerChoice2, answerChoice3, answerChoice4, answer):
         self.id = id
@@ -54,6 +56,7 @@ class UserQuestion1:
         self.answerChoice4 = answerChoice4
         self.answer = answer
         
+        # Getter and setter methods for question and answer choices
         @property
         def id(self):
             return self.id
@@ -110,12 +113,14 @@ class UserQuestion1:
         def answer(self, value):
             self.answer = value
 
+# Model representing the UserAnswer
 class UserAnswer(models.Model):
     id = models.CharField(primary_key=True,max_length=255)
     answer = models.CharField(max_length=255)
     user_answer = models.CharField(max_length=255)
     score = models.IntegerField(default=0)
 
+    # Serialize method to convert to dictionary
     def serialize(self):
         return {
             'id': self.id,
@@ -124,6 +129,7 @@ class UserAnswer(models.Model):
             'score': self.score,
         }
     
+# Model representing the UserQuestion
 class UserQuestion(models.Model):
     id = models.IntegerField(primary_key=True)
     question_text = models.CharField(max_length=255)
@@ -136,13 +142,14 @@ class UserQuestion(models.Model):
     def __str__(self):
         return self.question_text
     
-
+# Class representing the QuestionManager
 class QuestionManager:
     def __init__(self, topic):
             print(topic)
             self.topic = topic
             self.questions = []  # list of question objects
 
+    # Method to get questions
     def get_questions(self):
         print("Getting questions for " + str(self.topic))
         if self.topic == "EarlyLearning":
@@ -153,10 +160,12 @@ class QuestionManager:
             return self.questions
         return self.questions
     
+    # Class representing the EarlyLearningQuestions
 class EarlyLearningQuestions:
     def __init__(self):
         self.questions = []  # list of questions from early learning
 
+    # Method to get early learning questions
     def get_questions(self):
         #self.addEarlyLearningQuestion(self.question1())
         #self.addEarlyLearningQuestion(self.question2())
@@ -215,7 +224,7 @@ class AnswerManager:
 #         question.save()
 #         return a
     
-
+# Model representing the Question
 class Question(models.Model):
     topics = [
         ('Shapes', '#'),

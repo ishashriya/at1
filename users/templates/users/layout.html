@@ -4,16 +4,19 @@
 
 <head>
     <title>Q&A</title>
+        <!-- Load static CSS file -->
     <link href="{% static 'users/styles.css' %}" rel="stylesheet">
 </head>
 
 <body>
     <div class="header">
         <div class="logo">
+            <!-- Load static logo image -->
             <img src="{% static 'users/logo.gif' %}" alt="Logo">
         </div>
         <div class="user-info">
             {% if user.is_authenticated %}
+                <!-- Display user information if authenticated -->
                 <span>{{ user.username }}</span>
                 <form action="{% url 'users:logout' %}" method="post" style="margin: 0; margin-left: 20px;">
                     {% csrf_token %}
@@ -22,6 +25,7 @@
             {% endif %}
         </div>
     </div>
+    <!-- Display messages if any -->
     {% if messages %}
     <ul class="messages">
         {% for message in messages %}

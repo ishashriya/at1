@@ -1,6 +1,8 @@
 from django.db import migrations, models
 
+
 def set_default_age(apps, schema_editor):
+    #get the model questions from age selected
     Question = apps.get_model('eduprod', 'Question')
     # Set default age for existing instances
     Question.objects.filter(age='').update(age=3)
