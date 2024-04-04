@@ -74,11 +74,59 @@
         <div id="navBtn" class="quiz-panel" style="display: none;">
             <button class="revealBtn" onclick="">Check Answer</button>
             <button class="nextBtn">Next</button>
-            <button class="submitBtn">Finish</button>
+            <button class="submitBtn" onclick="goToHomePage()">Finish</button>
         </div>
     </div>
 </div> 
+<style>
+    .square {
+        height: 50px;
+        width: 50px;
+        background-color: #555;
+    }
+    .circle {
+        height: 50px;
+        width: 50px;
+        background-color: #555;
+        border-radius: 50%;
+    }
+    .rectangle {
+        height: 50px;
+        width: 100px;
+        background-color: #555;
+    }
+    .oval {
+        height: 50px;
+        width: 100px;
+        background-color: #555;
+        border-radius: 50%;
+    }
+    .trapezoid {
+        border-bottom: 50px solid #555;
+        border-left: 25px solid transparent;
+        border-right: 25px solid transparent;
+        height: 0;
+        width: 125px;
+    }
+    .parallelogram {
+        width: 100px;
+        height: 50px;
+        transform: skew(20deg);
+        background: #555;
+    }
+    .triangle {
+        width: 0;
+        height: 0;
+        border-left: 25px solid transparent;
+        border-right: 25px solid transparent;
+        border-bottom: 50px solid #555;
+    }
+</style>
 <script>
+    // go to home page
+    function goToHomePage() {
+        window.location.href = "/eduprod";
+    }
         // Event listener for age selection form
     document.getElementById('ageForm').addEventListener('change', function() {
         var ageValue = parseInt(document.getElementById('age').value);
@@ -154,10 +202,13 @@
                     heading_text = ``;
             }
 
+            divText = getQuestionDiv(question)
+
             // Update content with question and answer choices
             content.innerHTML = `
                 <h2>${heading_text}</h2>
-                <div class='question'>${question}</div>
+                ${divText}
+                <br>
                 <form id="answerForm">
                     <div class='answer_options'><input type="radio" name="answer" value="${answer_choice1}"> ${answer_choice1}</div>
                     <div class='answer_options'><input type="radio" name="answer" value="${answer_choice2}"> ${answer_choice2}</div>
@@ -184,6 +235,26 @@
             submitButton.style.display = 'block';
             //document.querySelector('.startQuizBtn').style.display = 'block';
         }
+}
+
+function getQuestionDiv(questionText) {
+    div = ''
+    switch (questionText) {
+        case "square":
+        case "circle": 
+        case "rectangle": 
+        case "oval":
+        case "trapezoid": 
+        case "parallelogram":
+        case "triangle": 
+            div = `<div class="${questionText}"></div>`;
+            break;
+        default:  
+            div = `
+                <div class="question">${questionText}</div>
+                `;
+    }
+    return div;
 }
 
     // Function to display questions in the quiz panel
