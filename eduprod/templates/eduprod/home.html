@@ -266,7 +266,18 @@ function displayQuestions(data, topic) {
 
     const content = document.getElementById(`${topic}`);
     content.style.display="none";
-    //if (topic )
+    if (topic == 'Addition') {
+        document.getElementById('Subtraction').style.display = 'none';
+    }
+    if (topic == 'Subtraction') {
+        document.getElementById('Addition').style.display = 'none';
+    }
+    if (topic == 'Multiplication') {
+        document.getElementById('Division').style.display = 'none';
+    }
+    if (topic == 'Division') {
+        document.getElementById('Multiplication').style.display = 'none';
+    }
     document.getElementById('Question').style.display = 'block';
     //document.getElementById('${topic}').style.display = 'none';
     document.querySelector('.startQuizBtn').style.display = 'none';
@@ -321,48 +332,6 @@ function getSelectedAnswer() {
   return selectedAnswer;
   };
 
-//     displayQuestion();
 
-     //btn.addEventListener("click", function() {
-     //    const answerElement = content.querySelector('.answer');
-     //    if (btn.textContent === "Reveal Answer") {
-     //        answerElement.style.display = "block";
-     //        btn.textContent = "Next Question";
-     //    } else {
-     //        currentQuestionIndex++;
-     //        displayQuestion();
-     //    }
-    // });
-
-//     document.addEventListener("DOMContentLoaded", function() {
-//     let currentQuestionIndex = 0;
-//     const questions = JSON.parse(document.getElementById('content').getAttribute('data-questions'));
-//     const content = document.getElementById('content');
-//     const btn = document.getElementById('revealBtn');
-// });
-
-    // Function to display questions in the quiz panel
-    // function displayQuestions(questions, topic) {
-    //     const questionsContainer = document.getElementById(`${topic.toLowerCase()}Questions`);
-    //     // Clear existing content
-    //     questionsContainer.innerHTML = '';
-
-    //     // Iterate through each question and append to container
-    //     questions.forEach(question => {
-    //         alert("displayQuestions2=")
-    //         const questionElement = document.createElement('div');
-    //         // questionElement.classList.add('question');
-    //         // questionElement.innerHTML = `<img src="${question.image_url}" alt="${question.questionText}"><br>`;
-    //         questionsContainer.appendChild(questionElement);
-    //     });
-    // }
-
-    // Add event listener to Start Quiz button for each panel
-    // document.querySelectorAll('.startQuizBtn').forEach(function(btn) {
-    //     btn.addEventListener('click', function() {
-    //         var topic = btn.parentElement.getAttribute('id');
-    //         fetchQuestions(topic);
-    //     });
-    // });
 </script>  
 {% endblock %}
